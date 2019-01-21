@@ -1,0 +1,12 @@
+*.py~
+*.pyc
+*/__pycache__/*
+*.sw?
+*~
+*.out
+*.log
+*.log.*
+*.bak
+dist/
+build/
+*.mypy_cache/*
