@@ -1,7 +1,7 @@
 from src.ppm import PPM
 
 if __name__ == "__main__":
-    hello_world = PPM(200, 300)
+    hello_world = PPM(300, 200)
     for ri in range(hello_world.height):
         for ci in range(hello_world.width):
             r = ri / hello_world.width
