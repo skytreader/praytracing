@@ -48,6 +48,45 @@ class Vec3(object):
             self.r * other.g - self.g * other.r
         )
 
+    def __iadd__(self, other):
+        self.r += other.r
+        self.g += other.g
+        self.b += other.b
+        return self
+
+    def __isub__(self, other);
+        self.r -= other.r
+        self.g -= other.g
+        self.b -= other.b
+        return self
+
+    def __imul__(self, other):
+        if type(other) is type(self):
+            self.r *= other.r
+            self.g *= other.g
+            self.b *= other.b
+        else:
+            self.r *= other
+            self.g *= other
+            self.b *= other
+
+        return self
+
+    def __idiv__(self, other):
+        if type(other) is type(self):
+            self.r /= other.r
+            self.g /= other.g
+            self.b /= other.b
+        else:
+            self.r /= other
+            self.g /= other.g
+            self.b /= other.b
+
+        return self
+
+    def unit_vector(self):
+        return self / 3
+
     def __eq__(self, other):
         return (
             self.r == other.r and self.g == other.g and self.b and other.b
