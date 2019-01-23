@@ -54,7 +54,7 @@ class Vec3(object):
         self.b += other.b
         return self
 
-    def __isub__(self, other);
+    def __isub__(self, other):
         self.r -= other.r
         self.g -= other.g
         self.b -= other.b
@@ -91,3 +91,9 @@ class Vec3(object):
         return (
             self.r == other.r and self.g == other.g and self.b and other.b
         )
+
+    def map(self, fn):
+        self.r = fn(self.r)
+        self.g = fn(self.g)
+        self.b = fn(self.b)
+        return self
