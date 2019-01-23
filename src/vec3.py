@@ -22,3 +22,33 @@ class Vec3(object):
 
     def __sub__(self, other):
         return Vec3(self.r - other.r, self.g - other.g, self.b - other.b)
+
+    def __mul__(self, other):
+        if type(other) is type(self):
+            return Vec3(self.r * other.r, self.g - other.g, self.b - other.b)
+        else:
+            return Vec3(self.r * other, self.g * other, self.b * other)
+
+    def __div__(self, other):
+        if type(other) is type(self):
+            return Vec3(self.r / other.r, self.g - other.g, self.b - other.b)
+        else:
+            return Vec3(self.r / other, self.g / other, self.b / other)
+
+    def make_tuple(self):
+        return (self.r, self.g, self.b)
+
+    def dot(self, other):
+        return sum((self * other).make_tuple())
+
+    def cross(self, other):
+        return Vec3(
+            self.g * other.b - self.b * other.g,
+            -(self.r * other.b - self.b * other.r),
+            self.r * other.g - self.g * other.r
+        )
+
+    def __eq__(self, other):
+        return (
+            self.r == other.r and self.g == other.g and self.b and other.b
+        )
