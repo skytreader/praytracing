@@ -23,7 +23,7 @@ if __name__ == "__main__":
     v_movement: Vec3 = Vec3(0, 2, 0)
     origin: Vec3 = Vec3(0, 0, 0)
 
-    for j in range(height - 1, 0, -1):
+    for j in range(height - 1, -1, -1):
         for i in range(width):
             u = i / width
             v = j / height
