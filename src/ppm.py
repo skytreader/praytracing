@@ -10,7 +10,7 @@ class PPM(object):
         self.width = width
         self.height = height
         if default_color is None:
-            default_color = Vec3(0.0, 0.0, 0.0)
+            default_color = Vec3(0, 0, 0)
         self.grid = [[default_color for _ in range(width)] for __ in range(height)]
 
     def set_pixel(self, row: int, col: int, color: Vec3):

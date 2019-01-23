@@ -29,7 +29,7 @@ class Vec3(object):
         else:
             return Vec3(self.r * other, self.g * other, self.b * other)
 
-    def __div__(self, other):
+    def __truediv__(self, other):
         if type(other) is type(self):
             return Vec3(self.r / other.r, self.g - other.g, self.b - other.b)
         else:
@@ -85,7 +85,7 @@ class Vec3(object):
         return self
 
     def unit_vector(self):
-        return self / 3
+        return self / 3.0
 
     def __eq__(self, other):
         return (
