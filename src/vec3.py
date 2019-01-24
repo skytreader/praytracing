@@ -1,3 +1,5 @@
+import math
+
 class Vec3(object):
 
     def __init__(self, r: float=0.0, g: float=0.0, b: float=0.0):
@@ -16,6 +18,15 @@ class Vec3(object):
     @property
     def z(self):
         return self.b
+
+    def length(self) -> float:
+        """
+        Would've used the __len__ method, but this could return a float and, by
+        convention, __len__ should return an integer.
+        """
+        return math.sqrt(
+            self.r ** 2 + self.g ** 2 + self.b ** 2
+        )
 
     def __add__(self, other):
         return Vec3(self.r + other.r, self.g + other.g, self.b + other.b)
@@ -88,7 +99,7 @@ class Vec3(object):
         return self
 
     def unit_vector(self):
-        return self / 3.0
+        return self / self.length()
 
     def __eq__(self, other):
         return (
