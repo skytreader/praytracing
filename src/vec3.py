@@ -24,13 +24,16 @@ class Vec3(object):
         return Vec3(self.r - other.r, self.g - other.g, self.b - other.b)
 
     def __mul__(self, other):
-        if type(other) is type(self):
+        if isinstance(other, Vec3):
             return Vec3(self.r * other.r, self.g - other.g, self.b - other.b)
         else:
             return Vec3(self.r * other, self.g * other, self.b * other)
 
+    def __rmul__(self, other):
+        return self.__mul__(other)
+
     def __truediv__(self, other):
-        if type(other) is type(self):
+        if isinstance(other, Vec3):
             return Vec3(self.r / other.r, self.g - other.g, self.b - other.b)
         else:
             return Vec3(self.r / other, self.g / other, self.b / other)
