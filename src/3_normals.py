@@ -38,7 +38,9 @@ def color(ray: Ray) -> Vec3:
         return 0.5 * Vec3(normal.x + 1, normal.y + 1, normal.z + 1)
 
     unit_direction: Vec3 = ray.direction.unit_vector()
-    t: float = 0.5 * (unit_direction.y + 1)
+    # Note that t's definition was pulled up. I guess he was just saving on some
+    # stack space.
+    t = 0.5 * (unit_direction.y + 1)
     return (UNIT_VEC3 * (1.0 - t)) + (Vec3(0.5, 0.7, 1.0) * t)
 
 if __name__ == "__main__":
