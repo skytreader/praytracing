@@ -47,7 +47,7 @@ class Vec3(object):
 
     def __mul__(self, other) -> "Vec3":
         if isinstance(other, Vec3):
-            return Vec3(self.r * other.r, self.g - other.g, self.b - other.b)
+            return Vec3(self.r * other.r, self.g * other.g, self.b * other.b)
         else:
             return Vec3(self.r * other, self.g * other, self.b * other)
 
