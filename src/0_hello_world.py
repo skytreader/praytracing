@@ -1,4 +1,5 @@
 from src.ppm import PPM
+from src.utils import _derive_ppm_filename
 from src.vec3 import Vec3
 
 if __name__ == "__main__":
@@ -13,4 +14,4 @@ if __name__ == "__main__":
             color = v * 255.99
             color.map(int)
             hello_world.set_pixel(ri, ci, color)
-    hello_world.write("/tmp/prt_hello_world.ppm")
+    hello_world.write(_derive_ppm_filename())

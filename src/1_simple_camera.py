@@ -1,5 +1,6 @@
 from src.ppm import PPM
 from src.ray import Ray
+from src.utils import _derive_ppm_filename
 from src.vec3 import Vec3
 
 """
@@ -45,4 +46,4 @@ if __name__ == "__main__":
             # gradient at the bottom so we do this.
             ppm.set_pixel((height - 1) - j, i, _color)
 
-    ppm.write("/tmp/simple_camera.ppm")
+    ppm.write(_derive_ppm_filename())
