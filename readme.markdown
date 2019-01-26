@@ -7,3 +7,8 @@ Part of this documentation is having type anotations, in the spirit of the
 original C++ code, because I find that it helps bridge the understanding between
 a programming and mathematical perspective. To this end, this needs **Python
 3.6+** with [mypy](http://mypy-lang.org/) installed (see `requirements.txt`).
+
+To check type consistency (assuming you have mypy in your path---use a
+virtualenv!):
+
+    mypy --ignore-missing-imports src/*.py

@@ -14,5 +14,5 @@ class Ray(object):
     def direction(self):
         return self.b
 
-    def point_at_parameter(t: float) -> Vec3:
+    def point_at_parameter(self, t: float) -> Vec3:
         return self.a + (t * self.b)

@@ -39,53 +39,53 @@ class Vec3(object):
             self.r ** 2 + self.g ** 2 + self.b ** 2
         )
 
-    def __add__(self, other):
+    def __add__(self, other) -> "Vec3":
         return Vec3(self.r + other.r, self.g + other.g, self.b + other.b)
 
-    def __sub__(self, other):
+    def __sub__(self, other) -> "Vec3":
         return Vec3(self.r - other.r, self.g - other.g, self.b - other.b)
 
-    def __mul__(self, other):
+    def __mul__(self, other) -> "Vec3":
         if isinstance(other, Vec3):
             return Vec3(self.r * other.r, self.g - other.g, self.b - other.b)
         else:
             return Vec3(self.r * other, self.g * other, self.b * other)
 
-    def __rmul__(self, other):
+    def __rmul__(self, other) -> "Vec3":
         return self.__mul__(other)
 
-    def __truediv__(self, other):
+    def __truediv__(self, other) -> "Vec3":
         if isinstance(other, Vec3):
             return Vec3(self.r / other.r, self.g - other.g, self.b - other.b)
         else:
             return Vec3(self.r / other, self.g / other, self.b / other)
 
-    def make_tuple(self):
+    def make_tuple(self) -> tuple:
         return (self.r, self.g, self.b)
 
-    def dot(self, other):
+    def dot(self, other) -> float:
         return sum((self * other).make_tuple())
 
-    def cross(self, other):
+    def cross(self, other) -> "Vec3":
         return Vec3(
             self.g * other.b - self.b * other.g,
             -(self.r * other.b - self.b * other.r),
             self.r * other.g - self.g * other.r
         )
 
-    def __iadd__(self, other):
+    def __iadd__(self, other) -> "Vec3":
         self.r += other.r
         self.g += other.g
         self.b += other.b
         return self
 
-    def __isub__(self, other):
+    def __isub__(self, other) -> "Vec3":
         self.r -= other.r
         self.g -= other.g
         self.b -= other.b
         return self
 
-    def __imul__(self, other):
+    def __imul__(self, other) -> "Vec3":
         if type(other) is type(self):
             self.r *= other.r
             self.g *= other.g
@@ -97,7 +97,7 @@ class Vec3(object):
 
         return self
 
-    def __idiv__(self, other):
+    def __idiv__(self, other) -> "Vec3":
         if type(other) is type(self):
             self.r /= other.r
             self.g /= other.g
@@ -109,15 +109,15 @@ class Vec3(object):
 
         return self
 
-    def unit_vector(self):
+    def unit_vector(self) -> "Vec3":
         return self / self.length()
 
-    def __eq__(self, other):
+    def __eq__(self, other) -> bool:
         return (
-            self.r == other.r and self.g == other.g and self.b and other.b
+            self.r == other.r and self.g == other.g and self.b == other.b
         )
 
-    def map(self, fn):
+    def map(self, fn) -> "Vec3":
         self.r = fn(self.r)
         self.g = fn(self.g)
         self.b = fn(self.b)
