@@ -1,6 +1,17 @@
 import math
 
 class Vec3(object):
+    """
+    **Confusing terminology time!** One of the simplest (and maybe earliest-
+    encountered) definition of the term _vector_ is _magnitude with direction_.
+    This is in contrast with scalars which are plain magnitudes. But this object
+    is more a point in 3D-space with no direction in sight (magnitude can be
+    taken as the length, as defined in a method below).
+
+    This represents vectors in the î, ĵ, k-hat sense: they are vectors with the
+    origin implied to be at (0, 0, 0). And hence they have magnitude _and_
+    direction. This "normalizes" vectors that originate from any point in space.
+    """
 
     def __init__(self, r: float=0.0, g: float=0.0, b: float=0.0):
         self.r = r
