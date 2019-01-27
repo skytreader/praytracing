@@ -30,9 +30,10 @@ def hit_sphere(center: Vec3, radius: float, ray: Ray) -> float:
     if discriminant < 0:
         return -1.0
     else:
-        # TODO Mathematically explain why we only take -b - sqrt(discriminant).
-        # Remember that in the quadratic equation, there is also a positive
-        # version (damn, there's a formal term for this which I forgot).
+        # The quadratic equation has a conjugate pair for its numerator.
+        # However, in here we only take the negative part of the conjugate pair.
+        # This seems to be an arbitrary decision; try to change the negative to
+        # positive and see some cool shit!
         return (-b - math.sqrt(discriminant)) / (2 * a)
 
 def color(ray: Ray) -> Vec3:
