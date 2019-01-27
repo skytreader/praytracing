@@ -15,6 +15,10 @@ def hit_sphere(center: Vec3, radius: float, ray: Ray) -> float:
     """
     Check if the given ray hits the sphere described by the center and the
     radius.
+
+    More than just computing whether a ray hits the sphere, it also solves for
+    the actual point of intersection. This can then be used to compute the
+    normal vector _at that point_.
     """
     # The vector from the ray's origin to the center of the sphere
     oc: Vec3 = ray.origin - center
@@ -26,11 +30,21 @@ def hit_sphere(center: Vec3, radius: float, ray: Ray) -> float:
     if discriminant < 0:
         return -1.0
     else:
+        # TODO Mathematically explain why we only take -b - sqrt(discriminant).
+        # Remember that in the quadratic equation, there is also a positive
+        # version (damn, there's a formal term for this which I forgot).
         return (-b - math.sqrt(discriminant)) / (2 * a)
 
 def color(ray: Ray) -> Vec3:
     """
     Linear interpolation of color based on the y direction.
+
+    As for hitting the sphere, note that the brightness of an object with
+    respect to its light source is dependent on its normal vectors. The greater
+    the angle between the normal and the light ray, the darker that spot is.
+    Obvious implication: the sphere is brightest where the angle between the
+    normal and the light ray is 0---that is, when the light ray is parallel to
+    the normal.
     """
     t: float = hit_sphere(Vec3(0, 0, -1), 0.5, ray)
     if t > 0:
