@@ -50,6 +50,15 @@ def color(ray: Ray) -> Vec3:
     t: float = hit_sphere(Vec3(0, 0, -1), 0.5, ray)
     if t > 0:
         normal: Vec3 = (ray.point_at_parameter(t) - Vec3(0, 0, -1)).unit_vector()
+        # For all I can tell, what this does is to "scale" the normal such that
+        # (a) there are no negatives and (b) it will not all devolve to just 0,
+        # which leaves us with just a black circle. Multiplying by .5 ensures
+        # that the resulting sphere isn't too dark or too light.
+        #
+        # - Without the scaling factor (0.5), the image is just too bright.
+        # - Without the increments to each component of the normal, the
+        #   resulting image will tend to have negative values, which are invalid
+        #   in the PPM spec to begin with, and just plain doesn't make sense.
         return 0.5 * Vec3(normal.x + 1, normal.y + 1, normal.z + 1)
 
     unit_direction: Vec3 = ray.direction.unit_vector()
