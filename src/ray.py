@@ -15,4 +15,7 @@ class Ray(object):
         return self.b
 
     def point_at_parameter(self, t: float) -> Vec3:
+        """
+        Get a particular point in the 3D line represented by this Ray.
+        """
         return self.a + (t * self.b)

@@ -1,43 +1,27 @@
+from src.hittable import HitRecord, Hittable, HittableList
 from src.ppm import PPM
 from src.ray import Ray
+from src.sphere import Sphere
 from src.utils import _derive_ppm_filename
 from src.vec3 import Vec3
+from typing import List
 
-"""
-We have an abstract, static camera at (0, 0, 0).
-
-We have a sphere centered at (0, 0, 1) with a radius 0.5 units and we want all
-rays that go through it to color it red.
-"""
+import sys
 
 UNIT_VEC3: Vec3 = Vec3(1.0, 1.0, 1.0)
 
-def hit_sphere(center: Vec3, radius: float, ray: Ray) -> bool:
-    """
-    Check if the given ray hits the sphere described by the center and the
-    radius.
-    """
-    # The vector from the ray's origin to the center of the sphere
-    oc: Vec3 = ray.origin - center
-    # The following are just "components" of the quadratic formula, derived from
-    # vectors.
-    a: float = ray.direction.dot(ray.direction)
-    b: float = 2.0 * oc.dot(ray.direction)
-    c: float = oc.dot(oc) - (radius ** 2)
-    discriminant: float = (b ** 2) - (4 * a * c)
-    return discriminant > 0
-
-def color(ray: Ray) -> Vec3:
-    """
-    Linear interpolation of color based on the y direction.
-    """
-    if hit_sphere(Vec3(0, 0, -1), 0.5, ray):
-        return Vec3(1, 0, 0)
-
-    unit_direction: Vec3 = ray.direction.unit_vector()
-    # WOW lots of magic numbers!
-    t: float = 0.5 * (unit_direction.y + 1)
-    return (UNIT_VEC3 * (1.0 - t)) + (Vec3(0.5, 0.7, 1.0) * t)
+def color(ray: Ray, world: HittableList) -> Vec3:
+    spam: HitRecord = HitRecord(
+        0.0, Vec3(0, 0, 0), Vec3(1, 1, 1)
+    )
+    if world.hit(ray, 0.0, sys.float_info.max, spam):
+        return 0.5 * Vec3(
+            spam.normal.x + 1, spam.normal.y + 1, spam.normal.z + 1
+        )
+    else:
+        unit_direction: Vec3 = ray.direction.unit_vector()
+        t: float = 0.5 * (unit_direction.y + 1)
+        return ((1.0 - t) * UNIT_VEC3) + (t * Vec3(0.5, 0.7, 1.0))
 
 if __name__ == "__main__":
     width = 400
@@ -47,6 +31,12 @@ if __name__ == "__main__":
     h_movement: Vec3 = Vec3(4, 0, 0)
     v_movement: Vec3 = Vec3(0, 2, 0)
     origin: Vec3 = Vec3(0, 0, 0)
+
+    hittables: List[Hittable] = [
+        Sphere(Vec3(0.0, 0.0, -1.0), 0.5),
+        Sphere(Vec3(0.0, -100.5, -1.0), 100)
+    ]
+    world: HittableList = HittableList(hittables)
 
     for j in range(height - 1, -1, -1):
         for i in range(width):
@@ -59,7 +49,7 @@ if __name__ == "__main__":
             #    horizontal movement is increasing towards the vector (4, 0, 0)
             #    while vertical movement is decreasing from the vector (0, 2, 0)
             r: Ray = Ray(origin, lower_left_corner + (h_movement * u) + (v_movement * v))
-            _color: Vec3 = color(r)
+            _color: Vec3 = color(r, world)
             _color *= 255.9
             _color.map(int)
 
