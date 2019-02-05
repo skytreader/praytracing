@@ -4,19 +4,18 @@ from src.ray import Ray
 from src.sphere import Sphere
 from src.utils import _derive_ppm_filename
 from src.vec3 import Vec3
-from typing import List
+from typing import List, Optional
 
 import sys
 
 UNIT_VEC3: Vec3 = Vec3(1.0, 1.0, 1.0)
 
 def color(ray: Ray, world: HittableList) -> Vec3:
-    spam: HitRecord = HitRecord(
-        0.0, Vec3(0, 0, 0), Vec3(1, 1, 1)
-    )
-    if world.hit(ray, 0.0, sys.float_info.max, spam):
+    hit_attempt: Optional[HitRecord] = world.hit(ray, 0.0, sys.float_info.max)
+    if hit_attempt is not None:
         return 0.5 * Vec3(
-            spam.normal.x + 1, spam.normal.y + 1, spam.normal.z + 1
+            hit_attempt.normal.x + 1, hit_attempt.normal.y + 1,
+            hit_attempt.normal.z + 1
         )
     else:
         unit_direction: Vec3 = ray.direction.unit_vector()

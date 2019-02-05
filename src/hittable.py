@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 from src.ray import Ray
 from src.vec3 import Vec3
-from typing import List
+from typing import List, Optional
 
 class HitRecord(object):
     """
@@ -18,7 +18,15 @@ class HitRecord(object):
 class Hittable(ABC):
 
     @abstractmethod
-    def hit(self, ray: Ray, t_min: float, t_max: float, record: HitRecord) -> bool:
+    def hit(self, ray: Ray, t_min: float, t_max: float) -> Optional[HitRecord]:
+        """
+        Check whether the given Ray hits this object. Return a HitRecord if it
+        does, otherwise None.
+
+        Note that this deviates from the C++ code since the C++ code makes use
+        of side-effects to "return" the HitRecord. I find this signature more
+        Pythonic than relying on side-effects like that.
+        """
         pass
 
 class HittableList(Hittable):
@@ -26,19 +34,13 @@ class HittableList(Hittable):
     def __init__(self, hittables: List[Hittable]):
         self.hittables: List[Hittable] = hittables
 
-    def hit(self, ray: Ray, t_min: float, t_max: float, record: HitRecord) -> bool:
-        # Just a sentinel variable, we don't really care what this is initialized
-        # to since it will just be repeatedly overwritten as it is used.
-        rover_record: HitRecord = HitRecord(
-            0.0, Vec3(0, 0, 0), Vec3(1, 1, 1)
-        )
-        hit_anything: bool = False
+    def hit(self, ray: Ray, t_min: float, t_max: float) -> Optional[HitRecord]:
+        hit_attempt: Optional[HitRecord] = None
         closest_so_far: float = t_max
 
         for hittable in self.hittables:
-            if hittable.hit(ray, t_min, t_max, rover_record):
-                hit_anything = True
-                closest_so_far = rover_record.t
-                record = rover_record
+            hit_attempt = hittable.hit(ray, t_min, closest_so_far)
+            if hit_attempt is not None:
+                closest_so_far = hit_attempt.t
 
-        return hit_anything
+        return hit_attempt

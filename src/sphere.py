@@ -13,7 +13,7 @@ class Sphere(Hittable):
 
     def __decide_conjugate(
         self, t_min: float, t_max: float, neg_conjugate: float,
-        pos_conjugate: float, record: HitRecord
+        pos_conjugate: float
     ) -> Optional[float]:
         if t_min < neg_conjugate < t_max:
             return neg_conjugate
@@ -22,7 +22,7 @@ class Sphere(Hittable):
         else:
             return None
 
-    def hit(self, ray: Ray, t_min: float, t_max: float, record: HitRecord) -> bool:
+    def hit(self, ray: Ray, t_min: float, t_max: float) -> Optional[HitRecord]:
         origin_to_center: Vec3 = ray.origin - self.center
         # The following are just "components" of the quadratic formula, derived
         # from vectors and with some redundant 2's canceled out to begin with.
@@ -41,12 +41,12 @@ class Sphere(Hittable):
             # Also this code was "refactored" from the original C++ to read more
             # Pythonic.
             chosen_conjugate = self.__decide_conjugate(
-                t_min, t_max, neg_conjugate, pos_conjugate, record
+                t_min, t_max, neg_conjugate, pos_conjugate
             )
             if chosen_conjugate is not None:
-                record.t = chosen_conjugate
-                record.p = ray.point_at_parameter(record.t)
-                record.normal = (record.p - self.center) / self.radius
-                return True
+                t = chosen_conjugate
+                p = ray.point_at_parameter(t)
+                normal = (p - self.center) / self.radius
+                return HitRecord(t, p, normal)
         
-        return False
+        return None
