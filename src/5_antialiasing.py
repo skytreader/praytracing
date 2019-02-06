@@ -1,3 +1,4 @@
+from random import SystemRandom
 from src.camera import Camera
 from src.hittable import HitRecord, Hittable, HittableList
 from src.ppm import PPM
@@ -7,10 +8,10 @@ from src.utils import _derive_ppm_filename
 from src.vec3 import Vec3
 from typing import List, Optional
 
-import random
 import sys
 
 UNIT_VEC3: Vec3 = Vec3(1.0, 1.0, 1.0)
+random = SystemRandom()
 
 def color(ray: Ray, world: HittableList) -> Vec3:
     hit_attempt: Optional[HitRecord] = world.hit(ray, 0.0, sys.float_info.max)
