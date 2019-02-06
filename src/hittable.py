@@ -10,10 +10,15 @@ class HitRecord(object):
     what that means) and p is the point at which the ray hit our object.
     """
 
-    def __init__(self, t: float, p: Vec3, normal: Vec3):
-        self.t = t
-        self.p = p
-        self.normal = normal
+    def __init__(
+        self, t: float, p: Vec3, normal: Vec3, hit_object: Optional[str]=None
+    ):
+        self.t: float = t
+        self.p: Vec3 = p
+        self.normal: Vec3 = normal
+        self.hit_object: str = "unspecified"
+        if hit_object is not None:
+            self.hit_object = hit_object
 
 class Hittable(ABC):
 
@@ -38,9 +43,18 @@ class HittableList(Hittable):
         hit_attempt: Optional[HitRecord] = None
         closest_so_far: float = t_max
 
+        print("=" * 60)
         for hittable in self.hittables:
+            print("Checking %s" % hittable.name)
             hit_attempt = hittable.hit(ray, t_min, closest_so_far)
             if hit_attempt is not None:
+                if hit_attempt.hit_object == "gradient-sphere":
+                    print("Gradient sphere hit at %s" % hit_attempt.t)
                 closest_so_far = hit_attempt.t
+
+        print("post loop hit_attempt: %s" % hit_attempt)
+        if hit_attempt is not None:
+            print("In the end, what we really hit is %s" % hit_attempt.hit_object)
+        print("=" * 60)
 
         return hit_attempt

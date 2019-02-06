@@ -7,14 +7,18 @@ import math
 
 class Sphere(Hittable):
 
-    def __init__(self, center: Vec3, radius: float):
-        self.center = center
-        self.radius = radius
+    def __init__(self, center: Vec3, radius: float, name: Optional[str]=None):
+        self.center: Vec3 = center
+        self.radius: float = radius
+        self.name: str = "unnamed"
+        if name is not None:
+            self.name = name
 
     def __decide_conjugate(
         self, t_min: float, t_max: float, neg_conjugate: float,
         pos_conjugate: float
     ) -> Optional[float]:
+        # TODO Experiment: Check for pos_conjugate first. What happens?
         if t_min < neg_conjugate < t_max:
             return neg_conjugate
         elif t_min < pos_conjugate < t_max:
@@ -47,6 +51,6 @@ class Sphere(Hittable):
                 t = chosen_conjugate
                 p = ray.point_at_parameter(t)
                 normal = (p - self.center) / self.radius
-                return HitRecord(t, p, normal)
+                return HitRecord(t, p, normal, self.name)
         
         return None
