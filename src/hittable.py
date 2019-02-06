@@ -43,18 +43,9 @@ class HittableList(Hittable):
         hit_attempt: Optional[HitRecord] = None
         closest_so_far: float = t_max
 
-        print("=" * 60)
         for hittable in self.hittables:
-            print("Checking %s" % hittable.name)
-            hit_attempt = hittable.hit(ray, t_min, closest_so_far)
+            hit_attempt = hittable.hit(ray, t_min, closest_so_far) or hit_attempt
             if hit_attempt is not None:
-                if hit_attempt.hit_object == "gradient-sphere":
-                    print("Gradient sphere hit at %s" % hit_attempt.t)
                 closest_so_far = hit_attempt.t
-
-        print("post loop hit_attempt: %s" % hit_attempt)
-        if hit_attempt is not None:
-            print("In the end, what we really hit is %s" % hit_attempt.hit_object)
-        print("=" * 60)
 
         return hit_attempt
