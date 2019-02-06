@@ -40,12 +40,24 @@ class HittableList(Hittable):
         self.hittables: List[Hittable] = hittables
 
     def hit(self, ray: Ray, t_min: float, t_max: float) -> Optional[HitRecord]:
+        """
+        Tries to hit each object in self.hittables. The hit record will contain
+        the object closest to the source of the Ray.
+        """
         hit_attempt: Optional[HitRecord] = None
+        # Note how closest_so_far works: it relies on the assumption that the
+        # Hittable objects in self.hittables respect t_min and t_max properly.
         closest_so_far: float = t_max
 
         for hittable in self.hittables:
             hit_attempt = hittable.hit(ray, t_min, closest_so_far) or hit_attempt
             if hit_attempt is not None:
+                # At every possible hit, we record the parameter t which gave us
+                # the hit. We are sure we can hit this object at this t value
+                # and so it is recorded. Then, the t value is set as the t_max
+                # for the next possible hit, limiting the propagation of the
+                # ray. This process is repeated until all objects have been
+                # tested. No sorting needed!
                 closest_so_far = hit_attempt.t
 
         return hit_attempt
