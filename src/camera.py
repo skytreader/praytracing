@@ -24,5 +24,5 @@ class Camera(object):
     def get_ray(self, u: float, v: float) -> Ray:
         return Ray(
             self.origin,
-            self.lower_left_corner + (self.h_movement * u) + (self.v_movement * v)
+            self.lower_left_corner + (self.h_movement * u) + (self.v_movement * v) - self.origin
         )
