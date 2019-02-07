@@ -24,5 +24,11 @@ class Vec3Test(unittest.TestCase):
         ))
         self.assertEqual(expected, adb)
 
+    def test_itruediv(self):
+        a = Vec3(3, 6, 9)
+        lowest_terms_a = Vec3(1, 2, 3)
+        a /= 3
+        self.assertEqual(lowest_terms_a, a)
+
 if __name__ == "__main__":
     unittest.main()

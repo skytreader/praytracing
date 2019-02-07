@@ -86,7 +86,7 @@ class Vec3(object):
         return self
 
     def __imul__(self, other) -> "Vec3":
-        if type(other) is type(self):
+        if isinstance(other, Vec3):
             self.r *= other.r
             self.g *= other.g
             self.b *= other.b
@@ -97,15 +97,15 @@ class Vec3(object):
 
         return self
 
-    def __idiv__(self, other) -> "Vec3":
-        if type(other) is type(self):
+    def __itruediv__(self, other) -> "Vec3":
+        if isinstance(other, Vec3):
             self.r /= other.r
             self.g /= other.g
             self.b /= other.b
         else:
             self.r /= other
-            self.g /= other.g
-            self.b /= other.b
+            self.g /= other
+            self.b /= other
 
         return self
 

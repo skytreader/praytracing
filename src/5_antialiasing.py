@@ -48,11 +48,14 @@ if __name__ == "__main__":
             print("antialiasing...", end="")
             accumulator: Vec3 = Vec3(0, 0, 0)
             for sample in range(sampling_size):
-                u: float = (i + random.random()) / width
-                v: float = (j + random.random()) / height
+                # In this instance, instead of u and v being mere ratios to
+                # our distance from the edges, they feature a random "jitter"
+                # which we use to sample the pixels around our current pixel.
+                # In this sense, the current pixel is a combination of its
+                # surroundings.
+                u: float = float(i + random.random()) / float(width)
+                v: float = float(j + random.random()) / float(height)
                 r: Ray = cam.get_ray(u, v)
-                # Huh? What's that 2.0 magic number here?
-                p: Vec3 = r.point_at_parameter(2.0)
                 accumulator += color(r, world)
 
             accumulator /= sampling_size
