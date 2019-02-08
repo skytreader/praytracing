@@ -4,8 +4,6 @@ A pretty hardcoded abstraction for a camera (for now).
 from src.ray import Ray
 from src.vec3 import Vec3
 
-from typing import Optional
-
 class Camera(object):
 
     def __init__(

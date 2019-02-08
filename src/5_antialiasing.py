@@ -58,14 +58,11 @@ if __name__ == "__main__":
                 r: Ray = cam.get_ray(u, v)
                 accumulator += color(r, world)
 
-            accumulator /= sampling_size
+            accumulator /= float(sampling_size)
             print("done")
-            _color: Vec3 = color(r, world)
-            _color *= 255.9
-            _color.map(int)
+            accumulator *= 255.9
+            accumulator.map(int)
 
-            # Note the translation for the row: we want the white part of the
-            # gradient at the bottom so we do this.
-            ppm.set_pixel((height - 1) - j, i, _color)
+            ppm.set_pixel((height - 1) - j, i, accumulator)
 
     ppm.write(_derive_ppm_filename())

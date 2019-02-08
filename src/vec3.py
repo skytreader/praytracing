@@ -122,3 +122,6 @@ class Vec3(object):
         self.g = fn(self.g)
         self.b = fn(self.b)
         return self
+
+    def __str__(self):
+        return "(%s, %s, %s)" % (self.r, self.g, self.b)
