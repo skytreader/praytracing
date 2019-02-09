@@ -14,9 +14,9 @@ class Vec3(object):
     """
 
     def __init__(self, r: float=0.0, g: float=0.0, b: float=0.0):
-        self.r = r
-        self.g = g
-        self.b = b
+        self.r: float = r
+        self.g: float = g
+        self.b: float = b
 
     @property
     def x(self):
@@ -38,6 +38,9 @@ class Vec3(object):
         return math.sqrt(
             self.r ** 2 + self.g ** 2 + self.b ** 2
         )
+
+    def squared_length(self) -> float:
+        return self.r ** 2 + self.g ** 2 + self.b ** 2
 
     def __add__(self, other) -> "Vec3":
         return Vec3(self.r + other.r, self.g + other.g, self.b + other.b)
