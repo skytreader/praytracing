@@ -20,16 +20,21 @@ from src.utils import _derive_ppm_filename
 from src.vec3 import Vec3
 from typing import List, Optional
 
+import math
 import sys
 
 UNIT_VEC3: Vec3 = Vec3(1.0, 1.0, 1.0)
 random = SystemRandom()
 
 def color(ray: Ray, world: HittableList) -> Vec3:
-    hit_attempt: Optional[HitRecord] = world.hit(ray, 0.0, sys.float_info.max)
+    # Some reflected rays hit not at zero but at some near-zero value due to
+    # floating point shennanigans. So we try to compensate for that.
+    hit_attempt: Optional[HitRecord] = world.hit(ray, 0.001, sys.float_info.max)
     if hit_attempt is not None:
         target: Vec3 = hit_attempt.p + hit_attempt.normal + random_unit_sphere_point()
         # FIXME mmm recursion
+        # reflector_rate * reflected_color
+        # So in this case, the matterial is a 50% reflector.
         return 0.5 * color(Ray(hit_attempt.p, target - hit_attempt.p), world)
     else:
         unit_direction: Vec3 = ray.direction.unit_vector()
@@ -104,6 +109,12 @@ if __name__ == "__main__":
 
             accumulator /= float(sampling_size)
             print("done")
+            # Apply gamma correction. Without this line, the spheres will be too
+            # dark despite the fact that they are only 50% reflectors. This
+            # happens because, according to Shirley, most image viewers assume
+            # that the image is gamma-corrected and so display accordingly. We
+            # just comply.
+            accumulator.map(math.sqrt)
             accumulator *= 255.9
             accumulator.map(int)
 
