@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from src.material import Material
 from src.ray import Ray
 from src.vec3 import Vec3
 from typing import List, Optional
@@ -11,11 +12,19 @@ class HitRecord(object):
     """
 
     def __init__(
-        self, t: float, p: Vec3, normal: Vec3, hit_object: Optional[str]=None
+        self,
+        t: float,
+        p: Vec3,
+        normal: Vec3,
+        # Marked as optional to keep class backwards compatible with previous
+        # iterations of the raytracer.
+        material: Optional[Material]=None,
+        hit_object: Optional[str]=None
     ):
         self.t: float = t
         self.p: Vec3 = p
         self.normal: Vec3 = normal
+        self.material: Optional[Material] = material
         self.hit_object: str = "unspecified"
         if hit_object is not None:
             self.hit_object = hit_object

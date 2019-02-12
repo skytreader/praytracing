@@ -51,6 +51,6 @@ class Sphere(Hittable):
                 t = chosen_conjugate
                 p = ray.point_at_parameter(t)
                 normal = (p - self.center) / self.radius
-                return HitRecord(t, p, normal, self.name)
+                return HitRecord(t, p, normal)
         
         return None
