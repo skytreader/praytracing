@@ -86,7 +86,7 @@ if __name__ == "__main__":
     cam = Camera(lower_left_corner, h_movement, v_movement, origin)
 
     hittables: List[Hittable] = [
-        Sphere(Vec3(0, 0, -1), 0.5, "gradient-sphere"),
+        Sphere(Vec3(0, 0, -1), 0.5),
         Sphere(Vec3(0, -100.5, -1), 100)
     ]
     world: HittableList = HittableList(hittables)
