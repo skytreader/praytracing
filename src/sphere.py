@@ -1,4 +1,5 @@
 from src.hittable import HitRecord, Hittable
+from src.material import Material, Vanta
 from src.ray import Ray
 from src.vec3 import Vec3
 from typing import Optional
@@ -7,9 +8,16 @@ import math
 
 class Sphere(Hittable):
 
-    def __init__(self, center: Vec3, radius: float, name: Optional[str]=None):
+    def __init__(
+        self,
+        center: Vec3,
+        radius: float,
+        material: Optional[Material]=None,
+        name: Optional[str]=None
+    ):
         self.center: Vec3 = center
         self.radius: float = radius
+        self.material: Material = material or Vanta()
         self.name: str = "unnamed"
         if name is not None:
             self.name = name

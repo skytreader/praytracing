@@ -1,5 +1,5 @@
 from abc import ABC, abstractmethod
-from src.material import Material
+from src.material import Material, Vanta
 from src.ray import Ray
 from src.vec3 import Vec3
 from typing import List, Optional
@@ -16,15 +16,18 @@ class HitRecord(object):
         t: float,
         p: Vec3,
         normal: Vec3,
-        # Marked as optional to keep class backwards compatible with previous
-        # iterations of the raytracer.
         material: Optional[Material]=None,
         hit_object: Optional[str]=None
     ):
+        """
+        Note that even if material is set to None, `self.material` will be set
+        to the identity material, Vanta. The philosophy of this class is that
+        you do not need to have explicit `None` checks in your code.
+        """
         self.t: float = t
         self.p: Vec3 = p
         self.normal: Vec3 = normal
-        self.material: Optional[Material] = material
+        self.material: Material = material or Vanta()
         self.hit_object: str = "unspecified"
         if hit_object is not None:
             self.hit_object = hit_object

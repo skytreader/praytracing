@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from src.hittable import *
 from src.ray import Ray
 from src.vec3 import Vec3
 
@@ -19,10 +20,9 @@ class ReflectionRecord(object):
         self.scattering: Ray = scattering
 
 class Material(ABC):
-    from src.hittable import HitRecord
 
     @abstractmethod
-    def scatter(self, incident_ray: Ray, record: HitRecord) -> ReflectionRecord:
+    def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
         """
         Computes the resulting reflection when the given incident_ray bounces
         off this material. The details of the hit is recorded in the record
@@ -30,19 +30,45 @@ class Material(ABC):
         """
         pass
 
+class Vanta(Material):
+    """
+    This material reflects nothing. This can be used as an "identity" material
+    for when you are not really after a reflection in your code (e.g., previous
+    chapters in the text).
+
+    So, really, this is just for backwards compatibility. :)
+    """
+
+    def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
+        return ReflectionRecord(Vec3(0, 0, 0), incident_ray)
+
 class Lambertian(Material):
-    from src.hittable import HitRecord
     
     def __init__(self, albedo: Vec3):
         self.albedo: Vec3 = albedo
 
-    def scatter(self, incident_ray: Ray, record: HitRecord) -> ReflectionRecord:
+    def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
         # Lots of Physics I don't understand :\
         target: Vec3 = record.p + record.normal + random_unit_sphere_point()
         scattered: Ray = Ray(record.p, target - record.p)
         attenuation: Vec3 = self.albedo
         reflecord: ReflectionRecord = ReflectionRecord(attenuation, scattered)
         return reflecord
+
+class Metal(Material):
+
+    def __init__(self, albedo: Vec3):
+        self.albedo: Vec3  = albedo
+
+    def __reflect(self, v: Vec3, n: Vec3) -> Vec3:
+        return v - 2 * v.dot(n) * n
+
+    def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
+        reflected: Vec3 = self.__reflect(
+            incident_ray.direction().unit_vector(), record.normal
+        )
+        scattered: Ray = Ray(record.p, reflected)
+        return ReflectionRecord(self.albedo, scattered)
 
 
 def random_unit_sphere_point() -> Vec3:
