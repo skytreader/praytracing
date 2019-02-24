@@ -34,6 +34,9 @@ class HitRecord(object):
 
 class Hittable(ABC):
 
+    def __init__(self, material: Optional[Material]=None):
+        self.material: Material = material or Vanta()
+
     @abstractmethod
     def hit(self, ray: Ray, t_min: float, t_max: float) -> Optional[HitRecord]:
         """

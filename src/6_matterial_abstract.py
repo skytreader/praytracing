@@ -27,8 +27,8 @@ def color(ray: Ray, world: HittableList, depth: int=0) -> Vec3:
     if hit_attempt is not None:
         target: Vec3 = hit_attempt.p + hit_attempt.normal + random_unit_sphere_point()
         reflection: ReflectionRecord = hit_attempt.material.scatter(ray, hit_attempt)
-        print("reflection's attenuation: %s" % reflection.attenuation)
-        return Vec3(0.5, 0.5, 0.5) * color(Ray(hit_attempt.p, target - hit_attempt.p), world, depth + 1)
+        print("%s's attenuation: %s" % (hit_attempt.material, reflection.attenuation))
+        return reflection.attenuation * color(Ray(hit_attempt.p, target - hit_attempt.p), world, depth + 1)
     else:
         unit_direction: Vec3 = ray.direction.unit_vector()
         t: float = 0.5 * (unit_direction.y + 1)

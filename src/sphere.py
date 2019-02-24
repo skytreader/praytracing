@@ -15,9 +15,9 @@ class Sphere(Hittable):
         material: Optional[Material]=None,
         name: Optional[str]=None
     ):
+        super().__init__(material)
         self.center: Vec3 = center
         self.radius: float = radius
-        self.material: Material = material or Vanta()
         self.name: str = "unnamed"
         if name is not None:
             self.name = name
@@ -59,6 +59,6 @@ class Sphere(Hittable):
                 t = chosen_conjugate
                 p = ray.point_at_parameter(t)
                 normal = (p - self.center) / self.radius
-                return HitRecord(t, p, normal)
+                return HitRecord(t, p, normal, self.material)
         
         return None
