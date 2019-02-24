@@ -6,7 +6,7 @@ This is basically 6_matterial but with the methods and objects of 7_metals.
 from random import SystemRandom
 from src.camera import Camera
 from src.hittable import HitRecord, Hittable, HittableList
-from src.material import Lambertian, ReflectionRecord, random_unit_sphere_point
+from src.material import Lambertian, ReflectionRecord
 from src.ppm import PPM
 from src.ray import Ray
 from src.sphere import Sphere
@@ -25,10 +25,11 @@ def color(ray: Ray, world: HittableList, depth: int=0) -> Vec3:
     # floating point shennanigans. So we try to compensate for that.
     hit_attempt: Optional[HitRecord] = world.hit(ray, 0.001, sys.float_info.max)
     if hit_attempt is not None:
-        target: Vec3 = hit_attempt.p + hit_attempt.normal + random_unit_sphere_point()
         reflection: ReflectionRecord = hit_attempt.material.scatter(ray, hit_attempt)
-        print("%s's attenuation: %s" % (hit_attempt.material, reflection.attenuation))
-        return reflection.attenuation * color(Ray(hit_attempt.p, target - hit_attempt.p), world, depth + 1)
+        if depth < 50 and reflection is not None:
+            return reflection.attenuation * color(reflection.scattering, world, depth + 1)
+        else:
+            return Vec3(0, 0, 0)
     else:
         unit_direction: Vec3 = ray.direction.unit_vector()
         t: float = 0.5 * (unit_direction.y + 1)
