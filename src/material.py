@@ -65,7 +65,7 @@ class Metal(Material):
 
     def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
         reflected: Vec3 = self.__reflect(
-            incident_ray.direction().unit_vector(), record.normal
+            incident_ray.direction.unit_vector(), record.normal
         )
         scattered: Ray = Ray(record.p, reflected)
         return ReflectionRecord(self.albedo, scattered)
