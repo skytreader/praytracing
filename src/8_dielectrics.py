@@ -24,7 +24,7 @@ def color(ray: Ray, world: HittableList, depth: int) -> Vec3:
         # FIXME Is it really worthwhile to check if reflection is not None here?
         # All our Materials assume that a hit has been made, and therefore some
         # reflection should happen (unless it is Vanta).
-        if depth < 50 and scattering is not None and scattering.attenuation is not None:
+        if depth < 50 and scattering is not None:
             # Compare this with the hard-coded reflection in 6_matterial.
             return scattering.attenuation * color(scattering.scattering, world, depth + 1)
         else:

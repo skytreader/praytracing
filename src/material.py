@@ -19,8 +19,8 @@ class ReflectionRecord(object):
     Scattering is just the Ray that resulted from the reflection.
     """
 
-    def __init__(self, attenuation: Optional[Vec3], scattering: Ray):
-        self.attenuation: Optional[Vec3] = attenuation
+    def __init__(self, attenuation: Vec3, scattering: Ray):
+        self.attenuation: Vec3 = attenuation
         self.scattering: Ray = scattering
 
 class Material(ABC):
@@ -86,14 +86,7 @@ class Dielectric(Material):
         self.refractive_index: float = refractive_index
 
     def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
-        """
-        Dielectrics can either reflect or refract but never absorbs light (this
-        is an ideal, of course). That said, when the ray hitting this material
-        has refracted, the returned ReflectionRecord (misleadingly named at this
-        point) will have an attenuation of None.
-        """
         reflected: Vec3 = reflect(incident_ray.direction, record.normal)
-        # What is this declaration for, other than for pedagogical purposes?
         attenuation: Vec3 = Vec3(1, 1, 0)
 
         # These are just placeholders; the following conditional block is their
@@ -110,9 +103,9 @@ class Dielectric(Material):
 
         refracted = refract(incident_ray.direction, outward_normal, nint)
         if refracted is not None:
-            return ReflectionRecord(None, Ray(record.p, refracted))
+            return ReflectionRecord(attenuation, Ray(record.p, refracted))
         else:
-            return ReflectionRecord(Vec3(1, 1, 1), Ray(record.p, reflected))
+            return ReflectionRecord(attenuation, Ray(record.p, reflected))
 
 
 def random_unit_sphere_point() -> Vec3:
