@@ -85,6 +85,10 @@ class Dielectric(Material):
     def __init__(self, refractive_index: float):
         self.refractive_index: float = refractive_index
 
+    def __schlick_approximation(self, cosine: float):
+        r0 : float = (1 - self.refractive_index) / (1 + self.refractive_index) ** 2
+        return r0 + (1 - r0) * (1 - cosine) ** 5
+
     def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
         reflected: Vec3 = reflect(incident_ray.direction, record.normal)
         attenuation: Vec3 = Vec3(1, 1, 0)
@@ -93,19 +97,33 @@ class Dielectric(Material):
         # actual "initial values".
         outward_normal: Vec3 = Vec3(1, 1, 1)
         nint: float = 0
+        cosine: float = 0
 
         if incident_ray.direction.dot(record.normal) > 0:
             outward_normal = -1 * record.normal
             nint = self.refractive_index
+            cosine = (
+                self.refractive_index * incident_ray.direction.dot(record.normal) /
+                incident_ray.direction.length()
+            )
         else:
             outward_normal = record.normal
             nint = 1 / self.refractive_index
+            cosine = -(
+                incident_ray.direction.dot(record.normal) / incident_ray.direction.length()
+            )
 
-        refracted = refract(incident_ray.direction, outward_normal, nint)
+        refracted: Optional[Vec3] = refract(
+            incident_ray.direction, outward_normal, nint
+        )
+        reflection_probability: float = 1
         if refracted is not None:
-            return ReflectionRecord(attenuation, Ray(record.p, refracted))
-        else:
+            reflection_probability = self.__schlick_approximation(cosine)
+
+        if reflection_probability == 1:
             return ReflectionRecord(attenuation, Ray(record.p, reflected))
+        else:
+            return ReflectionRecord(attenuation, Ray(record.p, refracted))
 
 
 def random_unit_sphere_point() -> Vec3:
