@@ -2,21 +2,25 @@ from abc import ABC, abstractmethod
 from src.hittable import *
 from src.ray import Ray
 from src.vec3 import Vec3
+from typing import Optional
 
+import math
 import random
 
+# FIXME Rename this to ScatteringRecord. I'm just too lazy right now.
 class ReflectionRecord(object):
     """
-    Records the details of a reflection.
+    Records how a ray scatters after it hits a material. Inaccurately named as
+    that can be either reflection or refraction.
 
     Attenuation is how much flux/intensity was lost by the incident ray once it
     is reflected.
 
-    Scattering is just the Ray that resulted from the relfection.
+    Scattering is just the Ray that resulted from the reflection.
     """
 
-    def __init__(self, attenuation: Vec3, scattering: Ray):
-        self.attenuation: Vec3 = attenuation
+    def __init__(self, attenuation: Optional[Vec3], scattering: Ray):
+        self.attenuation: Optional[Vec3] = attenuation
         self.scattering: Ray = scattering
 
 class Material(ABC):
@@ -32,15 +36,21 @@ class Material(ABC):
 
 class Vanta(Material):
     """
-    This material reflects nothing. This can be used as an "identity" material
-    for when you are not really after a reflection in your code (e.g., previous
-    chapters in the text).
+    This material reflects nothing.
 
-    So, really, this is just for backwards compatibility. :)
+    See also: https://www.surreynanosystems.com/vantablack
     """
 
     def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
         return ReflectionRecord(Vec3(0, 0, 0), incident_ray)
+
+class Identity(Material):
+    """
+    This material reflects everything.
+    """
+
+    def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
+        return ReflectionRecord(Vec3(1, 1, 1), incident_ray)
 
 class Lambertian(Material):
     
@@ -57,18 +67,52 @@ class Lambertian(Material):
 
 class Metal(Material):
 
-    def __init__(self, albedo: Vec3):
+    def __init__(self, albedo: Vec3, fuzz: float):
         self.albedo: Vec3  = albedo
-
-    def __reflect(self, v: Vec3, n: Vec3) -> Vec3:
-        return v - 2 * v.dot(n) * n
+        self.fuzz: float = fuzz if fuzz < 1 else 1
 
     def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
-        reflected: Vec3 = self.__reflect(
+        reflected: Vec3 = reflect(
             incident_ray.direction.unit_vector(), record.normal
         )
-        scattered: Ray = Ray(record.p, reflected)
+        scattered: Ray = Ray(
+            record.p, reflected + self.fuzz * random_unit_sphere_point()
+        )
         return ReflectionRecord(self.albedo, scattered)
+
+class Dielectric(Material):
+
+    def __init__(self, refractive_index: float):
+        self.refractive_index: float = refractive_index
+
+    def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
+        """
+        Dielectrics can either reflect or refract but never absorbs light (this
+        is an ideal, of course). That said, when the ray hitting this material
+        has refracted, the returned ReflectionRecord (misleadingly named at this
+        point) will have an attenuation of None.
+        """
+        reflected: Vec3 = reflect(incident_ray.direction, record.normal)
+        # What is this declaration for, other than for pedagogical purposes?
+        attenuation: Vec3 = Vec3(1, 1, 0)
+
+        # These are just placeholders; the following conditional block is their
+        # actual "initial values".
+        outward_normal: Vec3 = Vec3(1, 1, 1)
+        nint: float = 0
+
+        if incident_ray.direction.dot(record.normal) > 0:
+            outward_normal = -1 * record.normal
+            nint = self.refractive_index
+        else:
+            outward_normal = record.normal
+            nint = 1 / self.refractive_index
+
+        refracted = refract(incident_ray.direction, outward_normal, nint)
+        if refracted is not None:
+            return ReflectionRecord(None, Ray(record.p, refracted))
+        else:
+            return ReflectionRecord(Vec3(1, 1, 1), Ray(record.p, reflected))
 
 
 def random_unit_sphere_point() -> Vec3:
@@ -103,3 +147,24 @@ def random_unit_sphere_point() -> Vec3:
         )
 
     return rand_point
+
+# TODO What is the n parameter in reflect and refract?
+def reflect(v: Vec3, n: Vec3) -> Vec3:
+    return v - 2 * v.dot(n) * n
+
+# TODO Will nint be the ratio of refractive indices? --> VERIFY!
+def refract(v: Vec3, n: Vec3, nint: float) -> Optional[Vec3]:
+    """
+    Return the refracting ray if the conditions are good for refraction. If it
+    does not describe a refracting scenario, return None.
+    """
+    uv: Vec3 = v.unit_vector()
+    dt: float = uv.dot(n)
+    discriminant: float = 1 - (nint ** 2) * (1 - dt ** 2)
+
+    if discriminant > 0:
+        return (
+            nint * (uv - n * dt) - n * math.sqrt(discriminant)
+        )
+
+    return None

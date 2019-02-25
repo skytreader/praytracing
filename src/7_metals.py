@@ -1,15 +1,3 @@
-"""
-Render a matte sphere.
-
-From the text:
-
-    Diffuse objects that don't emit light merely take on the color of their
-    surroundings but they modulate that with their own intrinsic color. Light
-    that reflects off a diffuse surface has its direction randomized. They might
-    also be absorbed rather than reflected. The darker the surface, the more
-    likely absorption is. Any algorithm that randomizes direction will produce
-    surfaces that look matte.
-"""
 from random import SystemRandom
 from src.camera import Camera
 from src.hittable import HitRecord, Hittable, HittableList
@@ -60,8 +48,8 @@ if __name__ == "__main__":
     hittables: List[Hittable] = [
         Sphere(Vec3(0, 0, -1), 0.5, Lambertian(Vec3(0.8, 0.3, 0.3))),
         Sphere(Vec3(0, -100.5, -1), 100, Lambertian(Vec3(0.8, 0.8, 0))),
-        Sphere(Vec3(1, 0, -1), 0.5, Metal(Vec3(0.8, 0.6, 0.2))),
-        Sphere(Vec3(-1, 0, -1), 0.5, Metal(Vec3(0.8, 0.8, 0.8)))
+        Sphere(Vec3(1, 0, -1), 0.5, Metal(Vec3(0.8, 0.6, 0.2), 0.3)),
+        Sphere(Vec3(-1, 0, -1), 0.5, Metal(Vec3(0.8, 0.8, 0.8), 0.1))
     ]
     world: HittableList = HittableList(hittables)
 
