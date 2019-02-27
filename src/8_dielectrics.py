@@ -45,6 +45,14 @@ if __name__ == "__main__":
     origin: Vec3 = Vec3(0, 0, 0)
     cam = Camera(lower_left_corner, h_movement, v_movement, origin)
 
+    # Addendum from the text: "if you use a negative radius, the geometry is
+    # unaffected but the surface normal points inward, so the effect is a hollow
+    # glass sphere". He then provides an example where, instead of merely
+    # negating the radius of the Dielectric, _adds_ another Dielectric, centered
+    # at the same point, with a negative radius less than the radius of the
+    # original (-0.45). The two spheres render into one hollow bubble. Without
+    # the positive-radius "shell", it would still look the same albeit with some
+    # obviously glitched renderings on the bubble.
     hittables: List[Hittable] = [
         Sphere(Vec3(0, 0, -1), 0.5, Lambertian(Vec3(0.8, 0.3, 0.3))),
         Sphere(Vec3(0, -100.5, -1), 100, Lambertian(Vec3(0.8, 0.8, 0))),
