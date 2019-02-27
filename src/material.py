@@ -91,7 +91,7 @@ class Dielectric(Material):
 
     def scatter(self, incident_ray: Ray, record: "HitRecord") -> ReflectionRecord:
         reflected: Vec3 = reflect(incident_ray.direction, record.normal)
-        attenuation: Vec3 = Vec3(1, 1, 0)
+        attenuation: Vec3 = Vec3(1, 1, 1)
 
         # These are just placeholders; the following conditional block is their
         # actual "initial values".
