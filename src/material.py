@@ -113,12 +113,16 @@ class Dielectric(Material):
                 incident_ray.direction.dot(record.normal) / incident_ray.direction.length()
             )
 
-        refracted: Optional[Vec3] = refract(
+        # All this convoluted mix-up with _refracted and refracted is just
+        # for type consistency.
+        refracted: Vec3 = Vec3(0, 0, 0)
+        _refracted: Optional[Vec3] = refract(
             incident_ray.direction, outward_normal, nint
         )
         reflection_probability: float = 1
-        if refracted is not None:
+        if _refracted is not None:
             reflection_probability = self.__schlick_approximation(cosine)
+            refracted = _refracted
 
         if reflection_probability == 1:
             return ReflectionRecord(attenuation, Ray(record.p, reflected))
