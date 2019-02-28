@@ -29,7 +29,14 @@ class Camera(object):
 
 class PositionableCamera(Camera):
 
-    def __init__(self, vfov: float, aspect_ratio: float):
+    # TODO Specify camera_aim as a direction, which just feels more natural.
+    # Even the text says "Later...you could define a direction to look in
+    # instead of a point to look at".
+    # TODO Maybe check that the up_vector is indeed valid wrt to the camera_posn
+    def __init__(
+        self, camera_posn: Vec3, camera_aim: Vec3, up_vector: Vec3, vfov: float,
+        aspect_ratio: float
+    ):
         """
         Create a camera automatically positioned relative to the scene such that
         it has a certain vertical field-of-view (vfov, expressed in degrees)
@@ -38,9 +45,13 @@ class PositionableCamera(Camera):
         vfov_rad: float = vfov * math.pi / 180
         half_height = math.tan(vfov_rad / 2)
         half_width = aspect_ratio * half_height
+        # The following are just some vectors to define axes. Don't be confused!
+        w = (camera_posn - camera_aim).unit_vector()
+        u = up_vector.cross(w).unit_vector()
+        v = w.cross(u)
         super().__init__(
-            Vec3(-half_width, -half_height, -1.0),
-            Vec3(2 * half_width, 0, 0),
-            Vec3(0, 2 * half_height, 0),
-            Vec3(0, 0, 0)
+            camera_posn - (half_width * u) - (half_height * v) - w,
+            2 * half_width * u,
+            2 * half_height * v,
+            camera_posn
         )

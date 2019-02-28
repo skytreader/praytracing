@@ -38,7 +38,9 @@ if __name__ == "__main__":
     height = 200
     sampling_size = 200
     ppm: PPM = PPM(width, height)
-    cam: Camera = PositionableCamera(90, width / height)
+    cam: Camera = PositionableCamera(
+        Vec3(-2, -2, 1), Vec3(0, 0, -1), Vec3(0, 1, 0) ,90, width / height
+    )
     radius: float = math.cos(math.pi / 4)
 
     hittables: List[Hittable] = [
