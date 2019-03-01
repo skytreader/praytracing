@@ -5,6 +5,7 @@ from src.ray import Ray
 from src.vec3 import Vec3
 
 import math
+import random
 
 class Camera(object):
 
@@ -35,23 +36,48 @@ class PositionableCamera(Camera):
     # TODO Maybe check that the up_vector is indeed valid wrt to the camera_posn
     def __init__(
         self, camera_posn: Vec3, camera_aim: Vec3, up_vector: Vec3, vfov: float,
-        aspect_ratio: float
+        aspect_ratio: float, aperture: float = 2, focus_dist: float = 2
     ):
         """
         Create a camera automatically positioned relative to the scene such that
         it has a certain vertical field-of-view (vfov, expressed in degrees)
         given the scene's aspect ration.
         """
+        self.lens_radius: float = aperture / 2
         vfov_rad: float = vfov * math.pi / 180
-        half_height = math.tan(vfov_rad / 2)
-        half_width = aspect_ratio * half_height
+        half_height: float = math.tan(vfov_rad / 2)
+        half_width: float = aspect_ratio * half_height
         # The following are just some vectors to define axes. Don't be confused!
-        w = (camera_posn - camera_aim).unit_vector()
-        u = up_vector.cross(w).unit_vector()
-        v = w.cross(u)
+        self.__w = (camera_posn - camera_aim).unit_vector()
+        self.__u = up_vector.cross(self.__w).unit_vector()
+        self.__v = self.__w.cross(self.__u)
         super().__init__(
-            camera_posn - (half_width * u) - (half_height * v) - w,
-            2 * half_width * u,
-            2 * half_height * v,
+            camera_posn - focus_dist * (
+                (half_width * self.__u) + (half_height * self.__v) + self.__w
+            ),
+            2 * half_width * self.__u,
+            2 * half_height * self.__v,
             camera_posn
         )
+
+    # Minor note: the change in parameter names, because u and v take on a new
+    # meaning in this class.
+    def get_ray(self, s: float, t: float):
+        random_point_in_disc: Vec3 = random_in_unit_disk() * self.lens_radius
+        offset: Vec3 = (
+            self.__u * random_point_in_disc.x +
+            self.__v * random_point_in_disc.y
+        )
+        return Ray(
+            self.origin + offset,
+            self.lower_left_corner + (self.h_movement * s) +
+            (self.v_movement * t) - self.origin - offset
+        )
+
+def random_in_unit_disk() -> Vec3:
+    point: Vec3 = Vec3(random.random(), random.random(), 0)
+    
+    while point.dot(point) >= 1:
+        point = Vec3(random.random(), random.random(), 0)
+
+    return point
