@@ -36,7 +36,7 @@ class PositionableCamera(Camera):
     # TODO Maybe check that the up_vector is indeed valid wrt to the camera_posn
     def __init__(
         self, camera_posn: Vec3, camera_aim: Vec3, up_vector: Vec3, vfov: float,
-        aspect_ratio: float, aperture: float = 2, focus_dist: float = 2
+        aspect_ratio: float, aperture: float = 2, focus_dist: float = 1
     ):
         """
         Create a camera automatically positioned relative to the scene such that
@@ -55,8 +55,8 @@ class PositionableCamera(Camera):
             camera_posn - focus_dist * (
                 (half_width * self.__u) + (half_height * self.__v) + self.__w
             ),
-            2 * half_width * self.__u,
-            2 * half_height * self.__v,
+            2 * half_width * focus_dist * self.__u,
+            2 * half_height * focus_dist * self.__v,
             camera_posn
         )
 
@@ -75,9 +75,9 @@ class PositionableCamera(Camera):
         )
 
 def random_in_unit_disk() -> Vec3:
-    point: Vec3 = Vec3(random.random(), random.random(), 0)
+    point: Vec3 = Vec3(random.uniform(-1, 1), random.uniform(-1, 1), 0)
     
     while point.dot(point) >= 1:
-        point = Vec3(random.random(), random.random(), 0)
+        point = Vec3(random.uniform(-1, 1), random.uniform(-1, 1), 0)
 
     return point

@@ -38,10 +38,10 @@ if __name__ == "__main__":
     height = 200
     sampling_size = 200
     ppm: PPM = PPM(width, height)
-    camera_posn: Vec3 = Vec3(3, 3, 2)
+    camera_posn: Vec3 = Vec3(3, 2, 2)
     camera_aim: Vec3 = Vec3(0, 0, -1)
     cam: Camera = PositionableCamera(
-        camera_posn, camera_aim, Vec3(0, 1, 0) ,90, width / height, 2,
+        camera_posn, camera_aim, Vec3(0, 1, 0), 90, width / height, 2,
         (camera_posn - camera_aim).length()
     )
     radius: float = math.cos(math.pi / 4)
