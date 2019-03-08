@@ -19,11 +19,15 @@ def random_scene(
 ) -> List[Hittable]:
     # Start off the list with the "earth" sphere.
     world: List[Hittable] = [
-        Sphere(Vec3(0, -1000, 0), 1000, Lambertian(Vec3(0.5, 0.5, 0.5)))
+        #Sphere(Vec3(0, -1000, 0), 1000, Lambertian(Vec3(0.5, 0.5, 0.5)))
     ]
 
     #for x in range(x_min, x_max):
+    #    if len(world) >= 100:
+    #        break
     #    for z in range(z_min, z_max):
+    #        if len(world) >= 100:
+    #            break
     #        material_decider: float = random.random()
     #        # TODO Clarify what the 0.9 constant here is for.
     #        center: Vec3 = Vec3(
@@ -58,6 +62,12 @@ def random_scene(
     #                    Sphere(center, 0.2, Dielectric(1.5))
     #                )
 
+    world.extend([
+        Sphere(Vec3(0, 1, 0), 1.0, Dielectric(1.5)),
+        Sphere(Vec3(-4, 1, 0), 1.0, Lambertian(Vec3(0.4, 0.2, 0.1))),
+        Sphere(Vec3(4, 1, 0), 1.0, Metal(Vec3(0.7, 0.6, 0.5), 0.0))
+    ])
+
     return world
 
 def color(ray: Ray, world: HittableList, depth: int) -> Vec3:
@@ -84,13 +94,12 @@ if __name__ == "__main__":
     height: int = 800
     sampling_size: int = 10
     ppm: PPM = PPM(width, height)
-    #world = HittableList(random_scene(-11, 11, -11, 11))
-    world = HittableList([
-        Sphere(Vec3(0, -1000, 0), 1004, Lambertian(Vec3(100, 0.5, 0.5)))
-    ])
+    spam: List[Hittable] = random_scene(-11, 11, -11, 11)
+    world = HittableList(spam)
+    print(spam)
 
-    lookfrom: Vec3 = Vec3(13, 2, 3)
-    lookat: Vec3 = Vec3(0, 0, 0)
+    lookfrom: Vec3 = Vec3(9, -2, -1)
+    lookat: Vec3 = Vec3(-4, 1, 0)
     focus_distance: float = 10.0;
     aperture: float = 0.1
 
@@ -101,7 +110,7 @@ if __name__ == "__main__":
 
     for j in range(height - 1, -1, -1):
         for i in range(width):
-            print("Tracing on row %s, col %s" % (j, i))
+            #print("Tracing on row %s, col %s" % (j, i))
             accumulator: Vec3 = Vec3(0, 0, 0)
 
             for sample in range(sampling_size):

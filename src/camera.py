@@ -62,7 +62,7 @@ class PositionableCamera(Camera):
 
     # Minor note: the change in parameter names, because u and v take on a new
     # meaning in this class.
-    def get_ray(self, s: float, t: float):
+    def get_ray(self, s: float, t: float) -> Ray:
         random_point_in_disc: Vec3 = random_in_unit_disk() * self.lens_radius
         offset: Vec3 = (
             self.__u * random_point_in_disc.x +
@@ -74,10 +74,18 @@ class PositionableCamera(Camera):
             (self.v_movement * t) - self.origin - offset
         )
 
-def random_in_unit_disk() -> Vec3:
+def irandom_in_unit_disk() -> Vec3:
     point: Vec3 = Vec3(random.uniform(-1, 1), random.uniform(-1, 1), 0)
     
     while point.dot(point) >= 1:
         point = Vec3(random.uniform(-1, 1), random.uniform(-1, 1), 0)
+
+    return point
+
+def random_in_unit_disk() -> Vec3:
+    point: Vec3 = 2 * Vec3(random.random(), random.random(), 0) - Vec3(1, 1, 0)
+
+    while point.dot(point) >= 1:
+        point = 2 * Vec3(random.random(), random.random(), 0) - Vec3(1, 1, 0)
 
     return point
