@@ -42,9 +42,11 @@ if __name__ == "__main__":
     lower_left_corner: Vec3 = Vec3(-2, -1, -1)
     h_movement: Vec3 = Vec3(4, 0, 0)
     v_movement: Vec3 = Vec3(0, 2, 0)
-    origin: Vec3 = Vec3(0, 0, 0)
+    origin: Vec3 = Vec3(3, 3, 2)
+    orientation: Vec3 = Vec3(0, 0, -1)
+    focus_dist = (origin - orientation).length()
     cam: Camera = PositionableCamera(
-        Vec3(20, 3, 3), Vec3(0, 0, 0), Vec3(0, 0, 1), 20, width / height
+        origin, orientation, Vec3(0, 0, 1), 20, width / height, 2, focus_dist
     )
 
     # Addendum from the text: "if you use a negative radius, the geometry is

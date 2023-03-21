@@ -13,10 +13,6 @@ class Camera(object):
         self, lower_left_corner: Vec3, h_movement: Vec3, v_movement: Vec3,
         origin: Vec3
     ):
-        """
-        Actually, all these parameters should not be Optional but are tagged as
-        so for backwards compatibility.
-        """
         self.lower_left_corner: Vec3 = lower_left_corner
         self.h_movement: Vec3 = h_movement
         self.v_movement: Vec3 = v_movement
@@ -41,7 +37,7 @@ class PositionableCamera(Camera):
         """
         Create a camera automatically positioned relative to the scene such that
         it has a certain vertical field-of-view (vfov, expressed in degrees)
-        given the scene's aspect ration.
+        given the scene's aspect ratio.
         """
         self.lens_radius: float = aperture / 2
         vfov_rad: float = vfov * math.pi / 180
