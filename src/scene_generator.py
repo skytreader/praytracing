@@ -19,48 +19,48 @@ def random_scene(
 ) -> List[Hittable]:
     # Start off the list with the "earth" sphere.
     world: List[Hittable] = [
-        #Sphere(Vec3(0, -1000, 0), 1000, Lambertian(Vec3(0.5, 0.5, 0.5)))
+        Sphere(Vec3(0, -1000, 0), 1000, Lambertian(Vec3(0.5, 0.5, 0.5)))
     ]
 
-    #for x in range(x_min, x_max):
-    #    if len(world) >= 100:
-    #        break
-    #    for z in range(z_min, z_max):
-    #        if len(world) >= 100:
-    #            break
-    #        material_decider: float = random.random()
-    #        # TODO Clarify what the 0.9 constant here is for.
-    #        center: Vec3 = Vec3(
-    #            x + 0.9 * random.random(),
-    #            0.2,
-    #            z + 0.9 * random.random()
-    #        )
+    for x in range(x_min, x_max):
+        if len(world) >= 100:
+            break
+        for z in range(z_min, z_max):
+            if len(world) >= 100:
+                break
+            material_decider: float = random.random()
+            # TODO Clarify what the 0.9 constant here is for.
+            center: Vec3 = Vec3(
+                x + 0.9 * random.random(),
+                0.2,
+                z + 0.9 * random.random()
+            )
 
-    #        # TODO What is Vec3(4, 0.2, 0) for?
-    #        if (center - Vec3(4, 0.2, 0)).length() > 0.9:
-    #            if material_decider < 0.8:
-    #                world.append(
-    #                    Sphere(center, 0.2, Lambertian(Vec3(
-    #                        random.random() * random.random(),
-    #                        random.random() * random.random(),
-    #                        random.random() * random.random()
-    #                    )))
-    #                )
-    #            elif material_decider < 0.95:
-    #                world.append(
-    #                    Sphere(center, 0.2, Metal(
-    #                        Vec3(
-    #                            0.5 * (1 + random.random()),
-    #                            0.5 * (1 + random.random()),
-    #                            0.5 * (1 + random.random())
-    #                        ),
-    #                        0.5 * random.random()
-    #                    ))
-    #                )
-    #            else:
-    #                world.append(
-    #                    Sphere(center, 0.2, Dielectric(1.5))
-    #                )
+            # TODO What is Vec3(4, 0.2, 0) for?
+            if (center - Vec3(4, 0.2, 0)).length() > 0.9:
+                if material_decider < 0.8:
+                    world.append(
+                        Sphere(center, 0.2, Lambertian(Vec3(
+                            random.random() * random.random(),
+                            random.random() * random.random(),
+                            random.random() * random.random()
+                        )))
+                    )
+                elif material_decider < 0.95:
+                    world.append(
+                        Sphere(center, 0.2, Metal(
+                            Vec3(
+                                0.5 * (1 + random.random()),
+                                0.5 * (1 + random.random()),
+                                0.5 * (1 + random.random())
+                            ),
+                            0.5 * random.random()
+                        ))
+                    )
+                else:
+                    world.append(
+                        Sphere(center, 0.2, Dielectric(1.5))
+                    )
 
     world.extend([
         Sphere(Vec3(0, 1, 0), 1.0, Dielectric(1.5)),
@@ -98,8 +98,8 @@ if __name__ == "__main__":
     world = HittableList(spam)
     print(spam)
 
-    lookfrom: Vec3 = Vec3(9, -2, -1)
-    lookat: Vec3 = Vec3(-4, 1, 0)
+    lookfrom: Vec3 = Vec3(13, 2, 3)
+    lookat: Vec3 = Vec3(0, 0, 0)
     focus_distance: float = 10.0;
     aperture: float = 0.1
 
@@ -110,12 +110,12 @@ if __name__ == "__main__":
 
     for j in range(height - 1, -1, -1):
         for i in range(width):
-            #print("Tracing on row %s, col %s" % (j, i))
+            print("Tracing on row %s, col %s" % (j, i))
             accumulator: Vec3 = Vec3(0, 0, 0)
 
             for sample in range(sampling_size):
-                u: float = i + random.random() / width
-                v: float = j + random.random() / height
+                u: float = float(i + random.random()) / width
+                v: float = float(j + random.random()) / height
                 r: Ray = camera.get_ray(u, v)
                 accumulator += color(r, world, 0)
 
