@@ -17,30 +17,27 @@ UNIT_VEC3: Vec3 = Vec3(1, 1, 1)
 def random_scene(
     x_min: int, x_max: int, z_min: int, z_max: int
 ) -> List[Hittable]:
+    SMALL_SPHERE_RADIUS = 0.2
     # Start off the list with the "earth" sphere.
     world: List[Hittable] = [
         Sphere(Vec3(0, -1000, 0), 1000, Lambertian(Vec3(0.5, 0.5, 0.5)))
     ]
 
     for x in range(x_min, x_max):
-        if len(world) >= 100:
-            break
         for z in range(z_min, z_max):
-            if len(world) >= 100:
-                break
             material_decider: float = random.random()
             # TODO Clarify what the 0.9 constant here is for.
             center: Vec3 = Vec3(
                 x + 0.9 * random.random(),
-                0.2,
+                SMALL_SPHERE_RADIUS,
                 z + 0.9 * random.random()
             )
 
             # TODO What is Vec3(4, 0.2, 0) for?
-            if (center - Vec3(4, 0.2, 0)).length() > 0.9:
+            if (center - Vec3(4, SMALL_SPHERE_RADIUS, 0)).length() > 0.9:
                 if material_decider < 0.8:
                     world.append(
-                        Sphere(center, 0.2, Lambertian(Vec3(
+                        Sphere(center, SMALL_SPHERE_RADIUS, Lambertian(Vec3(
                             random.random() * random.random(),
                             random.random() * random.random(),
                             random.random() * random.random()
@@ -48,7 +45,7 @@ def random_scene(
                     )
                 elif material_decider < 0.95:
                     world.append(
-                        Sphere(center, 0.2, Metal(
+                        Sphere(center, SMALL_SPHERE_RADIUS, Metal(
                             Vec3(
                                 0.5 * (1 + random.random()),
                                 0.5 * (1 + random.random()),
@@ -59,7 +56,7 @@ def random_scene(
                     )
                 else:
                     world.append(
-                        Sphere(center, 0.2, Dielectric(1.5))
+                        Sphere(center, SMALL_SPHERE_RADIUS, Dielectric(1.5))
                     )
 
     world.extend([
