@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
-from src.hittable import *
-from src.ray import Ray
-from src.vec3 import Vec3
+from one_week.hittable import *
+from one_week.ray import Ray
+from one_week.vec3 import Vec3
 from typing import Optional
 
 import math

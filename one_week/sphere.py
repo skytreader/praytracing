@@ -1,7 +1,7 @@
-from src.hittable import HitRecord, Hittable
-from src.material import Material, Vanta
-from src.ray import Ray
-from src.vec3 import Vec3
+from one_week.hittable import HitRecord, Hittable
+from one_week.material import Material, Vanta
+from one_week.ray import Ray
+from one_week.vec3 import Vec3
 from typing import Optional
 
 import math

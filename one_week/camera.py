@@ -1,8 +1,8 @@
 """
 A pretty hardcoded abstraction for a camera (for now).
 """
-from src.ray import Ray
-from src.vec3 import Vec3
+from one_week.ray import Ray
+from one_week.vec3 import Vec3
 
 import math
 import random

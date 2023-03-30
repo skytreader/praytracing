@@ -1,11 +1,11 @@
 from random import SystemRandom
-from src.camera import Camera
-from src.hittable import HitRecord, Hittable, HittableList
-from src.ppm import PPM
-from src.ray import Ray
-from src.sphere import Sphere
-from src.utils import _derive_ppm_filename
-from src.vec3 import Vec3
+from one_week.camera import Camera
+from one_week.hittable import HitRecord, Hittable, HittableList
+from one_week.ppm import PPM
+from one_week.ray import Ray
+from one_week.sphere import Sphere
+from one_week.utils import _derive_ppm_filename
+from one_week.vec3 import Vec3
 from typing import List, Optional
 
 import sys

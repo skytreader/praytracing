@@ -1,4 +1,4 @@
-from src.vec3 import Vec3
+from one_week.vec3 import Vec3
 from typing import Optional
 
 class PPM(object):

@@ -1,12 +1,12 @@
 from random import SystemRandom
-from src.camera import Camera
-from src.hittable import HitRecord, Hittable, HittableList
-from src.material import Lambertian, Metal, ReflectionRecord
-from src.ppm import PPM
-from src.ray import Ray
-from src.sphere import Sphere
-from src.utils import _derive_ppm_filename
-from src.vec3 import Vec3
+from one_week.camera import Camera, PositionableCamera
+from one_week.hittable import HitRecord, Hittable, HittableList
+from one_week.material import Dielectric, Lambertian, Metal, ReflectionRecord
+from one_week.ppm import PPM
+from one_week.ray import Ray
+from one_week.sphere import Sphere
+from one_week.utils import _derive_ppm_filename
+from one_week.vec3 import Vec3
 from typing import List, Optional
 
 import math
@@ -20,13 +20,13 @@ def color(ray: Ray, world: HittableList, depth: int) -> Vec3:
     # floating point shennanigans. So we try to compensate for that.
     hit_attempt: Optional[HitRecord] = world.hit(ray, 0.001, sys.float_info.max)
     if hit_attempt is not None:
-        reflection: ReflectionRecord = hit_attempt.material.scatter(ray, hit_attempt)
+        scattering: ReflectionRecord = hit_attempt.material.scatter(ray, hit_attempt)
         # FIXME Is it really worthwhile to check if reflection is not None here?
         # All our Materials assume that a hit has been made, and therefore some
         # reflection should happen (unless it is Vanta).
-        if depth < 50 and reflection is not None:
+        if depth < 50 and scattering is not None:
             # Compare this with the hard-coded reflection in 6_matterial.
-            return reflection.attenuation * color(reflection.scattering, world, depth + 1)
+            return scattering.attenuation * color(scattering.scattering, world, depth + 1)
         else:
             return Vec3(0, 0, 0)
     else:
@@ -42,14 +42,26 @@ if __name__ == "__main__":
     lower_left_corner: Vec3 = Vec3(-2, -1, -1)
     h_movement: Vec3 = Vec3(4, 0, 0)
     v_movement: Vec3 = Vec3(0, 2, 0)
-    origin: Vec3 = Vec3(0, 0, 0)
-    cam = Camera(lower_left_corner, h_movement, v_movement, origin)
+    origin: Vec3 = Vec3(3, 3, 2)
+    orientation: Vec3 = Vec3(0, 0, -1)
+    focus_dist = (origin - orientation).length()
+    cam: Camera = PositionableCamera(
+        origin, orientation, Vec3(0, 0, 1), 20, width / height, 2, focus_dist
+    )
 
+    # Addendum from the text: "if you use a negative radius, the geometry is
+    # unaffected but the surface normal points inward, so the effect is a hollow
+    # glass sphere". He then provides an example where, instead of merely
+    # negating the radius of the Dielectric, _adds_ another Dielectric, centered
+    # at the same point, with a negative radius less than the radius of the
+    # original (-0.45). The two spheres render into one hollow bubble. Without
+    # the positive-radius "shell", it would still look the same albeit with some
+    # obviously glitched renderings on the bubble.
     hittables: List[Hittable] = [
         Sphere(Vec3(0, 0, -1), 0.5, Lambertian(Vec3(0.8, 0.3, 0.3))),
         Sphere(Vec3(0, -100.5, -1), 100, Lambertian(Vec3(0.8, 0.8, 0))),
         Sphere(Vec3(1, 0, -1), 0.5, Metal(Vec3(0.8, 0.6, 0.2), 0.3)),
-        Sphere(Vec3(-1, 0, -1), 0.5, Metal(Vec3(0.8, 0.8, 0.8), 0.1))
+        Sphere(Vec3(-1, 0, -1), 0.5, Dielectric(1.5))
     ]
     world: HittableList = HittableList(hittables)
 

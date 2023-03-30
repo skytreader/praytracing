@@ -1,17 +1,23 @@
 """
-Render a matte sphere using the Material classes defined much later in the book.
+Render a matte sphere.
 
-This is basically 6_matterial but with the methods and objects of 7_metals.
+From the text:
+
+    Diffuse objects that don't emit light merely take on the color of their
+    surroundings but they modulate that with their own intrinsic color. Light
+    that reflects off a diffuse surface has its direction randomized. They might
+    also be absorbed rather than reflected. The darker the surface, the more
+    likely absorption is. Any algorithm that randomizes direction will produce
+    surfaces that look matte.
 """
 from random import SystemRandom
-from src.camera import Camera
-from src.hittable import HitRecord, Hittable, HittableList
-from src.material import Lambertian, ReflectionRecord
-from src.ppm import PPM
-from src.ray import Ray
-from src.sphere import Sphere
-from src.utils import _derive_ppm_filename
-from src.vec3 import Vec3
+from one_week.camera import Camera
+from one_week.hittable import HitRecord, Hittable, HittableList
+from one_week.ppm import PPM
+from one_week.ray import Ray
+from one_week.sphere import Sphere
+from one_week.utils import _derive_ppm_filename
+from one_week.vec3 import Vec3
 from typing import List, Optional
 
 import math
@@ -20,20 +26,53 @@ import sys
 UNIT_VEC3: Vec3 = Vec3(1.0, 1.0, 1.0)
 random = SystemRandom()
 
-def color(ray: Ray, world: HittableList, depth: int=0) -> Vec3:
+def color(ray: Ray, world: HittableList) -> Vec3:
     # Some reflected rays hit not at zero but at some near-zero value due to
     # floating point shennanigans. So we try to compensate for that.
     hit_attempt: Optional[HitRecord] = world.hit(ray, 0.001, sys.float_info.max)
     if hit_attempt is not None:
-        reflection: ReflectionRecord = hit_attempt.material.scatter(ray, hit_attempt)
-        if depth < 50 and reflection is not None:
-            return reflection.attenuation * color(reflection.scattering, world, depth + 1)
-        else:
-            return Vec3(0, 0, 0)
+        target: Vec3 = hit_attempt.p + hit_attempt.normal + random_unit_sphere_point()
+        # FIXME mmm recursion
+        # reflector_rate * reflected_color
+        # So in this case, the matterial is a 50% reflector.
+        return 0.5 * color(Ray(hit_attempt.p, target - hit_attempt.p), world)
     else:
         unit_direction: Vec3 = ray.direction.unit_vector()
         t: float = 0.5 * (unit_direction.y + 1)
         return ((1.0 - t) * UNIT_VEC3) + (t * Vec3(0.5, 0.7, 1.0))
+
+def random_unit_sphere_point() -> Vec3:
+    """
+    Pick a random point inside a unit sphere. To do this, we use a "rejection
+    method":
+
+    1. Pick a random point inside a cube with edges in the [-1, 1] range of all
+    axes. Note that the unit sphere is inside this cube and this cube is "easy"
+    to construct programmatically.
+    2. Check whether the point is inside the unit sphere. If it is not, generate
+    again. Do this until we get a point inside the unit sphere.
+
+    The time complexity of this procedure is left as an exercise to the reader.
+    """
+    # Shirley uses the following formula to generate a random point in the
+    # constraints specified:
+    #   2 * rand_vector - unit_vector
+    # Where rand_vector has components that range from [0, 1). While this is
+    # understandable enough, I'm experimenting with random.uniform instead.
+    rand_point: Vec3 = Vec3(
+        random.uniform(-1, 1),
+        random.uniform(-1, 1),
+        random.uniform(-1, 1)
+    )
+
+    while rand_point.squared_length() >= 1:
+        rand_point = Vec3(
+            random.uniform(-1, 1),
+            random.uniform(-1, 1),
+            random.uniform(-1, 1)
+        )
+
+    return rand_point
 
 if __name__ == "__main__":
     width = 400
@@ -47,8 +86,8 @@ if __name__ == "__main__":
     cam = Camera(lower_left_corner, h_movement, v_movement, origin)
 
     hittables: List[Hittable] = [
-        Sphere(Vec3(0, 0, -1), 0.5, Lambertian(Vec3(0.5, 0.5, 0.5))),
-        Sphere(Vec3(0, -100.5, -1), 100, Lambertian(Vec3(0.5, 0.5, 0.5)))
+        Sphere(Vec3(0, 0, -1), 0.5),
+        Sphere(Vec3(0, -100.5, -1), 100)
     ]
     world: HittableList = HittableList(hittables)
 

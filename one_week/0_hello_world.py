@@ -1,6 +1,6 @@
-from src.ppm import PPM
-from src.utils import _derive_ppm_filename
-from src.vec3 import Vec3
+from one_week.ppm import PPM
+from one_week.utils import _derive_ppm_filename
+from one_week.vec3 import Vec3
 
 if __name__ == "__main__":
     hello_world = PPM(300, 200)
