@@ -1,0 +1,22 @@
+{
+  "$schema" : "https://json-schema.org/draft/2020-12/schema",
+  "$id" : "https://github.com/skytreader/praytracing/Vector3.schema.json",
+  "title" : "Vector3",
+  "description" : "A 3D Vector",
+  "type" : "object",
+  "properties" : {
+    "x" : {
+      "type" : "number",
+      "description" : ""
+    },
+    "y" : {
+      "type" : "number",
+      "description" : ""
+    },
+    "z" : {
+      "type" : "number",
+      "description" : ""
+    }
+  },
+  "required" : [ ]
+}

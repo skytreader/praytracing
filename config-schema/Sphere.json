@@ -1,0 +1,26 @@
+{
+  "$schema" : "https://json-schema.org/draft/2020-12/schema",
+  "$id" : "https://github.com/skytreader/praytracing/Sphere.schema.json",
+  "title" : "Sphere",
+  "description" : "A spherical object to be rendered in our scene.",
+  "type" : "object",
+  "properties" : {
+    "radius" : {
+      "type" : "number",
+      "description" : ""
+    },
+    "material" : {
+      "type" : "string",
+      "description" : "Surface material of the sphere. Defines reflective properties."
+    },
+    "name" : {
+      "type" : "string",
+      "description" : "Label of this object for debugging."
+    },
+    "center" : {
+      "description" : "",
+      "$ref" : "https://github.com/skytreader/praytracing/Vector3.schema.json"
+    }
+  },
+  "required" : [ "center", "radius" ]
+}

@@ -39,7 +39,6 @@ if __name__ == "__main__":
     height = 200
     sampling_size = 200
     ppm: PPM = PPM(width, height)
-    lower_left_corner: Vec3 = Vec3(-2, -1, -1)
     h_movement: Vec3 = Vec3(4, 0, 0)
     v_movement: Vec3 = Vec3(0, 2, 0)
     origin: Vec3 = Vec3(3, 3, 2)
