@@ -1,0 +1,38 @@
+{
+  "$schema" : "https://json-schema.org/draft/2020-12/schema",
+  "$id" : "https://github.com/skytreader/praytracing/Camera.schema.json",
+  "title" : "Camera",
+  "description" : "The camera that renders our scene.",
+  "type" : "object",
+  "properties" : {
+    "camera_posn" : {
+      "description" : "position of the camera",
+      "$ref" : "https://github.com/skytreader/praytracing/Vector3.schema.json"
+    },
+    "camera_aim" : {
+      "description" : "The point in the world at which the camera is pointed at.",
+      "$ref" : "https://github.com/skytreader/praytracing/Vector3.schema.json"
+    },
+    "up_vector" : {
+      "description" : "Determines which direction is \"up\" for the camera.",
+      "$ref" : "https://github.com/skytreader/praytracing/Vector3.schema.json"
+    },
+    "vfov" : {
+      "type" : "number",
+      "description" : "The camera's vertical field of view, expressed in degrees."
+    },
+    "aspect_ratio" : {
+      "type" : "number",
+      "description" : "Size of the camera's sensor."
+    },
+    "aperture" : {
+      "type" : "number",
+      "description" : "Lens aperture of our camera."
+    },
+    "focus_dist" : {
+      "type" : "number",
+      "description" : ""
+    }
+  },
+  "required" : [ "aspect_ratio", "vfov", "up_vector", "camera_aim", "camera_posn" ]
+}
